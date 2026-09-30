@@ -1,12 +1,12 @@
-# SNC Guided 2.2.1
+# SNC Guided 2.2.2
 
-A personal, static workout and nutrition PWA for GitHub Pages. The app name remains SNC Guided 2.0; the release version is 2.2.1. No build step is needed. The HEIC fallback is bundled locally.
+A personal, static workout and nutrition PWA for GitHub Pages. The app name remains SNC Guided 2.0; the release version is 2.2.2. No build step is needed. The HEIC fallback is bundled locally.
 
 ## Exercise tutorials
 
-Every active exercise card now offers Add tutorial link. Paste a direct YouTube video/share/Shorts URL and save; the card shows Watch tutorial and Edit tutorial link. Videos open separately after saving the active workout. A failed draft save stops navigation and asks you to export a backup. Videos require internet access. Custom links are stored per exercise on this device, included in JSON backups, and can be edited or removed. Replace restore imports preferences; Merge preserves the receiving device's settings.
+91 YouTube links embedded in the coach’s two-page PDF are bundled against their exact exercise entries across both phases. Linked cards show Watch tutorial, opening YouTube separately after saving the active workout. The nine entries without embedded PDF links retain Add tutorial link. No replacement videos have been guessed.
 
-The source PDF is not present in this workspace, so no coach links have been guessed or bundled. Once the PDF is supplied, its verified video URLs can be assigned as tutorialUrl on matching exercises in js/programData.js. Custom links override those defaults; removing a custom link returns to the original when one exists.
+Custom links still override the defaults; removing a custom link restores the PDF tutorial. Custom links are included in JSON backups. A failed draft save stops navigation and asks for a backup. Videos require internet access.
 
 ## What changed after the audit
 
@@ -34,7 +34,7 @@ npm test
 
 Default preview: http://127.0.0.1:4173/SNC-Guided/. Set the PORT environment variable for an isolated test origin. Local preview records do not transfer to GitHub Pages or to another device.
 
-46 automated tests pass. They cover backup round trips, invalid backups, rollback on storage failure, interrupted restore recovery, failed-save exports, corrupted JSON, historical edits/PRs, per-side volume, partial completion, training-block separation, dated logs, undo, progression, request errors, metronome sequencing, service-worker caching and tutorial URL validation/backup restoration. The tutorial editor was checked at 390 × 844: invalid links show an error, a test-only link survives reload/resume, and Watch tutorial opens its YouTube URL in a separate tab. The test fixture was removed afterward; playback of the coach's actual videos awaits the PDF.
+48 automated tests pass. They cover backup round trips, invalid backups, rollback on storage failure, interrupted restore recovery, failed-save exports, corrupted JSON, historical edits/PRs, per-side volume, partial completion, training-block separation, dated logs, undo, progression, request errors, metronome sequencing, service-worker caching and tutorial URL validation/backup restoration. The tutorial editor was checked at 390 × 844: invalid links show an error, a test-only link survives reload/resume, and Watch tutorial opens its YouTube URL in a separate tab. The test fixture was removed afterward. Regression tests check all 91 PDF mappings and preserve the distinct Step Ups videos used in the two phases. Video availability remains controlled by YouTube and the uploader.
 
 Browser checks demonstrated meal scaling, partial-session confirmation/persistence, history editing, deletion undo, goal alignment, backup-file validation/preview, merge restore, and the restored meal appearing on its original date. A public HEIC sample was converted by the bundled decoder and fitted to a 1024 × 1024 JPEG without a Google request. Phone-sized layout was inspected at 390 × 844, and a second browser window was confirmed blocked from editing while the first held the write lock. This is not a physical iPhone test.
 
@@ -52,9 +52,9 @@ Storage remains local to the browser/device. Clearing website data, deleting the
 
 ## Publish and install
 
-This release has not been pushed or deployed. Publish `index.html`, `manifest.json`, `sw.js`, and the complete `css`, `js`, and `icons` folders at the root of the existing repository. Keep the vendored decoder and license inside `js/vendor`. Keep the existing HTTPS origin and `/SNC-Guided/` path. Close older app windows before updating. Settings → Check for App Update activates a downloaded release after saving an active draft.
+For future deployments, publish `index.html`, `manifest.json`, `sw.js`, and the complete `css`, `js`, and `icons` folders at the root of the existing repository. Keep the vendored decoder and license inside `js/vendor`. Keep the existing HTTPS origin and `/SNC-Guided-2.0/` path. Close older app windows before updating. Settings → Check for App Update activates a downloaded release after saving an active draft.
 
-For a branch-based Pages setup use main / root. Wait for the deployment to succeed, then open https://shaznuke.github.io/SNC-Guided/ in iPhone Safari → Share → Add to Home Screen → Open as Web App (if shown) → Add. Launch the icon, configure the key in Settings and run Test Gemini Connection. Use the home-screen app consistently for your records.
+For a branch-based Pages setup use main / root. Wait for the deployment to succeed, then open https://shaznuke.github.io/SNC-Guided-2.0/ in iPhone Safari → Share → Add to Home Screen → Open as Web App (if shown) → Add. Launch the icon, configure the key in Settings and run Test Gemini Connection. Use the home-screen app consistently for your records.
 
 The old published build contained a reversible embedded key. This code has no bundled fallback. Replacing/revoking that exposed key in Google AI Studio remains an account-owner action; no credentials were rotated and no Git history was rewritten here. The configurable Gemini model and Test Connection button remain available. Avoid committing keys.
 
