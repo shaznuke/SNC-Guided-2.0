@@ -363,6 +363,12 @@ export class WorkoutEngine {
     } catch (e) {}
   }
 
+  exitToDraft() {
+    if (this.disposed || !this.saveDraft()) return false;
+    this.dispose();
+    return true;
+  }
+
   finishSession(overallRpe = 8, coachNotes = "") {
     if (this.finishedLog) return this.finishedLog;
     this.saveDraft();
