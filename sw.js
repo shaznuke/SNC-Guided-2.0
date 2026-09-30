@@ -1,5 +1,5 @@
 const CACHE_PREFIX = 'snc-guided-';
-const CACHE_NAME = `${CACHE_PREFIX}2.2.2-r1`;
+const CACHE_NAME = `${CACHE_PREFIX}2.2.3-r1`;
 const ASSETS = [
   './js/tutorialLinks.js',
   './', './index.html', './css/styles.css', './js/app.js', './js/dataUtils.js', './js/persistence.js', './js/improvements.js', './js/vendor/heic2any.min.js',
