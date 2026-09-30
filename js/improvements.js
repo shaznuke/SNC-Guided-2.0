@@ -13,7 +13,7 @@ import {
 } from "./dataUtils.js";
 import { storageIssues, recoverTransaction } from "./persistence.js";
 import { youtubeVideoUrl } from "./tutorialLinks.js";
-export const RELEASE = "2.2.1";
+export const RELEASE = "2.2.2";
 const $ = (id) => document.getElementById(id);
 function button(text, handler) {
   const b = document.createElement("button");
