@@ -1,6 +1,12 @@
-# SNC Guided 2.2.2
+# SNC Guided 2.2.3
 
-A personal, static workout and nutrition PWA for GitHub Pages. The app name remains SNC Guided 2.0; the release version is 2.2.2. No build step is needed. The HEIC fallback is bundled locally.
+A personal, static workout and nutrition PWA for GitHub Pages. The app name remains SNC Guided 2.0; the release version is 2.2.3. No build step is needed. The HEIC fallback is bundled locally.
+
+## Session exit and coach sharing
+
+Exit to dashboard pauses timers and keeps a resumable draft without writing History or Excel rows. Only Finish Session logs a workout; partial workouts still require confirmation. A failed draft save keeps the workout open.
+
+After a successful finish, a coach message draft includes phase, week, date, checked sets, weights, repetitions or durations, RPE and notes. Open WhatsApp draft prepares the text for manual recipient selection and sending. Copy Summary Text and Download Coach Excel are also available. Completed records persist on this device and populate the downloadable Excel workbook; the app does not automatically update an external workbook.
 
 ## Exercise tutorials
 
@@ -34,7 +40,7 @@ npm test
 
 Default preview: http://127.0.0.1:4173/SNC-Guided/. Set the PORT environment variable for an isolated test origin. Local preview records do not transfer to GitHub Pages or to another device.
 
-48 automated tests pass. They cover backup round trips, invalid backups, rollback on storage failure, interrupted restore recovery, failed-save exports, corrupted JSON, historical edits/PRs, per-side volume, partial completion, training-block separation, dated logs, undo, progression, request errors, metronome sequencing, service-worker caching and tutorial URL validation/backup restoration. The tutorial editor was checked at 390 × 844: invalid links show an error, a test-only link survives reload/resume, and Watch tutorial opens its YouTube URL in a separate tab. The test fixture was removed afterward. Regression tests check all 91 PDF mappings and preserve the distinct Step Ups videos used in the two phases. Video availability remains controlled by YouTube and the uploader.
+51 automated tests pass. They cover backup round trips, invalid backups, rollback on storage failure, interrupted restore recovery, failed-save exports, corrupted JSON, historical edits/PRs, per-side volume, partial completion, training-block separation, dated logs, undo, progression, request errors, metronome sequencing, service-worker caching and tutorial URL validation/backup restoration. The tutorial editor was checked at 390 × 844: invalid links show an error, a test-only link survives reload/resume, and Watch tutorial opens its YouTube URL in a separate tab. The test fixture was removed afterward. Regression tests check all 91 PDF mappings and preserve the distinct Step Ups videos used in the two phases. Video availability remains controlled by YouTube and the uploader.
 
 Browser checks demonstrated meal scaling, partial-session confirmation/persistence, history editing, deletion undo, goal alignment, backup-file validation/preview, merge restore, and the restored meal appearing on its original date. A public HEIC sample was converted by the bundled decoder and fitted to a 1024 × 1024 JPEG without a Google request. Phone-sized layout was inspected at 390 × 844, and a second browser window was confirmed blocked from editing while the first held the write lock. This is not a physical iPhone test.
 
