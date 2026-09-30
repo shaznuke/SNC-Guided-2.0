@@ -1,4 +1,5 @@
 import {sessionStatus, prescription} from './dataUtils.js';
+import {PROGRAM_DATA} from './programData.js';
 /**
  * Coach Update Generator & WhatsApp Sharing Utility
  * Transforms completed workout session into formatted text for coach
@@ -12,8 +13,9 @@ export const CoachUpdater = {
     const { dayName, week, date, durationMins, exercises, coachNotes, rpeRating } = sessionLog;
 
     let text = `🏋️‍♀️ *SNC Program Update - Week ${week}*\n`;
+    text += `${PROGRAM_DATA.programs[sessionLog.programId]?.title || 'SNC training'}\n`;
     text += `📌 *${dayName}*\n`;
-    text += `📅 Date: ${date} | ⏱ Duration: ${durationMins || '45'} mins\n`;
+    text += `📅 Date: ${date} | ⏱ Duration: ${durationMins ?? 'Not recorded'}${durationMins == null ? '' : ' mins'}\n`;
     text += `Status: ${sessionStatus(sessionLog)}\n`;
     if (rpeRating) {
       text += `🔥 Session Overall RPE: ${rpeRating}/10\n`;
@@ -77,9 +79,9 @@ export const CoachUpdater = {
         textarea.value = text;
         document.body.appendChild(textarea);
         textarea.select();
-        document.execCommand("copy");
+        const copied = document.execCommand("copy");
         document.body.removeChild(textarea);
-        return true;
+        return copied;
       }
     } catch (err) {
       console.error("Copy failed", err);
