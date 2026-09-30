@@ -105,6 +105,8 @@
     <!-- View 2: Active Workout Session Logger -->
     <section id="viewActiveSession" class="hidden">
       <div style="margin-top: 16px;">
+        <button id="btnExitSession" class="tool-chip">← Exit to dashboard</button>
+        <p class="field-hint">Exit keeps a draft only. Finish Session saves a workout to History and your Excel export.</p>
         <div class="session-bar">
           <div>
             <h3 id="sessionTitle" style="font-size: 0.98rem; color: #fff; font-weight: 800;">Day 1 Session</h3>
@@ -259,7 +261,7 @@
           Check for a new version. Your current workout is saved before updating.
         </p>
         <button id="btnForceUpdateApp" class="btn-start-day" style="background: var(--accent-cyan); color: #000; margin-bottom: 10px;">
-          🔄 Check for App Update · v2.2.2
+          🔄 Check for App Update · v2.2.3
         </button>
         <button id="btnExportData" class="btn-start-day" style="background: rgba(255,255,255,0.08); color: #fff;">
           💾 Download JSON Backup
@@ -363,16 +365,18 @@
         <textarea id="coachNotesInput" rows="2" class="set-input" style="text-align: left; padding: 10px; margin-top: 4px; resize: none;" placeholder="e.g., Felt strong on squats, 3s eccentric was smooth..."></textarea>
       </div>
 
-      <label style="font-size: 0.82rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 6px; display: block;">Coach Update Preview:</label>
+      <p class="field-hint">Saved to History and included in your coach Excel export. Review your WhatsApp draft below; you choose the recipient and tap Send in WhatsApp.</p>
+      <label style="font-size: 0.82rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 6px; display: block;">WhatsApp message draft:</label>
       <div id="reportPreview" class="report-preview-box"></div>
 
       <button id="btnShareWhatsApp" class="whatsapp-share-btn">
-        💬 Send Update via WhatsApp
+        💬 Open WhatsApp draft
       </button>
 
       <button id="btnCopyReport" class="copy-text-btn">
         📋 Copy Summary Text
       </button>
+      <button id="btnCoachExcel" class="copy-text-btn">📊 Download Coach Excel</button>
     </div>
   </div>
 
