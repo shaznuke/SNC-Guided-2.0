@@ -381,6 +381,21 @@ class AppController {
       });
     }
 
+    document.getElementById('btnExitSession').addEventListener('click', () => {
+      if (!this.activeWorkout?.exitToDraft()) {
+        notify('Could not save your draft. Keep this workout open and export a backup in Settings.');
+        return;
+      }
+      this.activeWorkout = null;
+      this.hideFloatingRestTimer();
+      this.resetMetronomeUI();
+      this.switchTab('home');
+      notify('Draft saved. No workout logged. Tap Resume when you are ready.');
+    });
+    document.getElementById('btnCoachExcel').addEventListener('click', () => {
+      if (this.persistCoachEdits()) ExcelExporter.exportCoachSpreadsheet();
+    });
+
     if (this.btnDiscardActiveSession) {
       this.btnDiscardActiveSession.addEventListener("click", () => {
         if (confirm("Cancel and discard current active session?")) {
@@ -408,22 +423,15 @@ class AppController {
     if (this.btnCloseCoachModal) {
       this.btnCloseCoachModal.addEventListener("click", () => {
         this.closeCoachUpdateModal();
-        this.switchTab("home");
       });
     }
 
     if (this.btnShareWhatsApp) {
       this.btnShareWhatsApp.addEventListener("click", () => {
         if (this.latestSessionLog) {
-          const notes = this.coachNotesInput ? this.coachNotesInput.value : "";
-          const rpe = this.rpeSlider ? this.rpeSlider.value : 8;
-          this.latestSessionLog.coachNotes = notes;
-          this.latestSessionLog.rpeRating = rpe;
-          
+          if (!this.persistCoachEdits()) return;
           const waUrl = CoachUpdater.getWhatsAppShareUrl(this.latestSessionLog);
-          window.open(waUrl, "_blank");
-          this.closeCoachUpdateModal();
-          this.switchTab("home");
+          window.open(waUrl, "_blank", "noopener,noreferrer");
         }
       });
     }
@@ -431,11 +439,7 @@ class AppController {
     if (this.btnCopyReport) {
       this.btnCopyReport.addEventListener("click", async () => {
         if (this.latestSessionLog) {
-          const notes = this.coachNotesInput ? this.coachNotesInput.value : "";
-          const rpe = this.rpeSlider ? this.rpeSlider.value : 8;
-          this.latestSessionLog.coachNotes = notes;
-          this.latestSessionLog.rpeRating = rpe;
-
+          if (!this.persistCoachEdits()) return;
           const text = CoachUpdater.generateSummaryText(this.latestSessionLog);
           const copied = await CoachUpdater.copyToClipboard(text);
           if (copied) {
@@ -443,7 +447,7 @@ class AppController {
             setTimeout(() => {
               this.btnCopyReport.textContent = "📋 Copy Summary Text";
             }, 2000);
-          }
+          } else notify('Copy was unavailable. Select and copy the message preview manually.');
         }
       });
     }
@@ -504,11 +508,17 @@ class AppController {
   }
 
   persistCoachEdits() {
-    if (!this.latestSessionLog) return;
-    this.latestSessionLog.coachNotes = this.coachNotesInput.value;
-    this.latestSessionLog.rpeRating = Number(this.rpeSlider.value);
-    StorageEngine.saveCompletedSession(this.latestSessionLog);
-    this.reportPreview.textContent = CoachUpdater.generateSummaryText(this.latestSessionLog);
+    if (!this.latestSessionLog) return false;
+    const updated = {...this.latestSessionLog, coachNotes: this.coachNotesInput.value, rpeRating: Number(this.rpeSlider.value)};
+    try {
+      StorageEngine.saveCompletedSession(updated);
+      this.latestSessionLog = updated;
+      this.reportPreview.textContent = CoachUpdater.generateSummaryText(updated);
+      return true;
+    } catch {
+      notify('Could not save your coach notes. Keep this window open and retry.');
+      return false;
+    }
   }
 
   switchTab(tabName) {
@@ -870,16 +880,24 @@ class AppController {
   }
 
   async openCoachUpdateModal() {
-    if (!this.activeWorkout) return;
+    if (!this.activeWorkout || this.finishingSession) return;
+    this.finishingSession = true;
+    this.btnFinishSession.disabled = true;
+    try {
 
-    const overallRpe = this.rpeSlider ? Number(this.rpeSlider.value) : 8;
-    const coachNotes = this.coachNotesInput ? this.coachNotesInput.value : "";
+    const overallRpe = 8;
+    const coachNotes = "";
 
     const completed = Object.values(this.activeWorkout.loggedData).some(ex => ex.sets.some(set => set.completed));
     if (!completed) { alert('Check at least one completed set before finishing.'); return; }
     const c=mainCompletion({programId:this.activeWorkout.activeProgram.id,dayId:this.activeWorkout.dayData.id,exercises:this.activeWorkout.loggedData});
     if(!c.complete && !await confirmPartial(c))return;
     this.latestSessionLog = this.activeWorkout.finishSession(overallRpe, coachNotes);
+    this.activeWorkout = null;
+    this.rpeSlider.value = overallRpe;
+    this.rpeValDisplay.textContent = overallRpe;
+    this.coachNotesInput.value = coachNotes;
+    this.switchTab('home');
     this.coachModal.querySelector('.modal-title').textContent=c.complete?'Session completed':'Partial workout saved';
     this.hideFloatingRestTimer();
     this.resetMetronomeUI();
@@ -888,10 +906,16 @@ class AppController {
     if (this.reportPreview) this.reportPreview.textContent = summaryText;
 
     this.coachModal.classList.remove("hidden");
+    } catch (error) {
+      notify(`Could not finish saving this session. Keep the app open and retry or export a backup. ${error.message}`);
+    } finally {
+      this.finishingSession = false;
+      this.btnFinishSession.disabled = false;
+    }
   }
 
   closeCoachUpdateModal() {
-    this.persistCoachEdits();
+    if (!this.persistCoachEdits()) return;
     if (this.coachModal) this.coachModal.classList.add('hidden');
     this.hideFloatingRestTimer();
     if (this.metronomeVisualBar) this.metronomeVisualBar.classList.add("hidden");
